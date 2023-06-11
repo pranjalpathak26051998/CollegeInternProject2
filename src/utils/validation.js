@@ -1,17 +1,18 @@
 
 const isValid = function (value) {
-    if (typeof value === "undefined" || value === "null") return false;
+    if (typeof value === "undefined" || value === null) return false;
     if (typeof value === "string" && value.trim().length === 0) return false;
     return true;
 };
 
-const isValidrequestBody = function (data) {
+const isValidRequestBody = function (data) {
     return Object.keys(data).length > 0;
 };
 
 const isValidString = function (input) {
-    return (/^[a-zA-Z]+$/.test(input))
-}
+    return /^[a-zA-Z0-9\s\-\.,']+$/u.test(input);
+  };
+  
 
 const isValidEmail = function (input) {
     return /^[\w\.-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*\.[a-zA-Z]{2,}$/
@@ -27,7 +28,7 @@ const isValidMobile = function (input) {
 
 
 module.exports.isValid = isValid
-module.exports.isValidrequestBody = isValidrequestBody
+module.exports.isValidRequestBody = isValidRequestBody
 module.exports.isValidString = isValidString
 module.exports.isValidEmail = isValidEmail
 module.exports.isValidMobile = isValidMobile
