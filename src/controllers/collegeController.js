@@ -11,6 +11,9 @@ const college = async function (req, res) {
     }
 
     const { name, fullName, logoLink } = data;
+    if(!name || !fullName || !logoLink){
+      return res.status(400).send({ status: false, message: "Please enter all field" });
+    }
     if (!isValidString(name) || !isValidString(fullName)) {
       return res.status(400).send({ status: false, message: "Please enter valid college name and fullName" });
     }
@@ -57,6 +60,10 @@ const interns = async function (req, res){
       return res.status(400).send({status:false, message:"Please enter Intern Details"})
     }
     const { name, email, mobile, collegeName } = data;
+
+    if( !name|| !email || !mobile || !collegeName){
+      return res.status(400).send({status:false, message:"Please enter all field "})
+    }
     if(!isValid(data)){
       return res.status(400).send({status:false, message:"Please enter Valid Details"})
     }
@@ -88,6 +95,7 @@ const interns = async function (req, res){
     //validation ends
 
     let collegeId = collegeCheck._id;
+    
     const result = await internModel.create({ name, email, mobile, collegeId });
     const response = {
       isDeleted : result.isDeleted,
@@ -96,7 +104,7 @@ const interns = async function (req, res){
       mobile : result.mobile,
       collegeId : result.collegeId
     }
-    return res.status(201).send({ status: true, data: response });
+    return res.status(200).send({ status: true, data: response });
 
   }catch(error){
     return res.status(500).send({ status: false, message: error.message });
@@ -115,7 +123,7 @@ let collegeDetails = async (req, res) => {
 
     let getCollege = await collegeModel.findOne({ name: query });
     if (!getCollege) {
-      return res.status(404).send({ status: false, message: "No college exists with that name" });
+      return res.status(400).send({ status: false, message: "No college exists with that name" });
     }
 
     let id = getCollege._id;

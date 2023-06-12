@@ -1,84 +1,181 @@
-# Scalable URL Shortener Project
+# Internship Management System - README
 
-This project aims to develop a scalable URL shortener service that generates shorter aliases for long URLs. The shortened aliases, also known as "short links," redirect users to the original URL when accessed. This helps save space, prevents mistyping of long URLs, and provides easy tracking of individual links.
+# Overview
 
+The Internship Management System is an API-based system that allows creating and managing colleges and interns for internship programs. It provides endpoints to create colleges, create interns, retrieve college details, and retrieve associated interns. The system is designed to be easy to use and efficient in managing internship-related data.
+Models
 
-### Overview
+The system consists of two main models:
+# College Model
 
-URL shortening is a common practice used to create shorter and more manageable URLs. In this phase, we will focus on the core functionality of the URL shortener service.
+The College model represents a college participating in the internship program. It has the following attributes:
 
-### Models
+    name: Abbreviated name of the college (mandatory, unique).
+    fullName: Full name of the college (mandatory).
+    logoLink: Public link to the college's logo stored on Amazon S3 (mandatory).
+    isDeleted: Indicates if the college is deleted (boolean, default: false).
 
-The project uses a Url model to store the URLs in the database. The model has the following attributes:
+# Intern Model
 
-- `urlCode` (mandatory, unique, lowercase, trim): A unique identifier for the shortened URL.
-- `longUrl` (mandatory, valid URL): The original URL.
-- `shortUrl` (mandatory, unique): The shortened URL.
+The Intern model represents an intern participating in the internship program. It has the following attributes:
 
-### API Endpoints
+    name: Name of the intern (mandatory).
+    email: Email address of the intern (mandatory, valid email, unique).
+    mobile: Mobile number of the intern (mandatory, valid mobile number, unique).
+    collegeId: Reference to the college the intern is associated with (mandatory, ObjectId, ref to college model).
+    isDeleted: Indicates if the intern is deleted (boolean, default: false).
 
-- `POST /url/shorten`: Creates a short URL for the provided original URL.
+# API Endpoints
 
-    Example request body:
-    ```json
-    {
-      "longUrl": "http://example.com/very-long-url"
-    }
-    ```
+The system provides the following API endpoints:
 
-    Example response:
-    ```json
-    {
-      "status": true,
-      "data": {
-        "longUrl": "http://example.com/very-long-url",
-        "shortUrl": "http://localhost:3000/abc123",
-        "urlCode": "abc123"
+# Create College
+
+    Endpoint: POST /functionup/colleges
+    Description: Creates a college document.
+
+    Request Body:
+{
+  "name": "iith",
+  "fullName": "Indian Institute of Technology, Hyderabad",
+  "logoLink": "https://functionup.s3.ap-south-1.amazonaws.com/colleges/iith.png"
+}
+
+Response:
+
+    Successful Response:
+{
+  "status": true,
+  "data": {
+    "name": "iith",
+    "fullName": "Indian Institute of Technology, Hyderabad",
+    "logoLink": "https://functionup.s3.ap-south-1.amazonaws.com/colleges/iith.png",
+    "isDeleted": false
+  }
+}
+
+Error Response:
+        {
+          "status": false,
+          "message": "Error message describing the issue"
+        }
+
+# Create Intern
+
+    Endpoint: POST /functionup/interns
+    Description: Creates an intern document.
+    Request Body:
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@iith.in",
+  "mobile": "90000900000",
+  "collegeName": "iith"
+}
+
+Response:
+
+    Successful Response:
+{
+  "status": true,
+  "data": {
+    "isDeleted": false,
+    "name": "Jane Doe",
+    "email": "jane.doe@iith.in",
+    "mobile": "90000900000",
+    "collegeId": "888771129c9ea621dc7f5e3b"
+  }
+}
+
+Error Response:
+        {
+          "status": false,
+          "message": "Error message describing the issue"
+        }
+
+# Get College Details
+
+    Endpoint: GET /functionup/collegeDetails?collegeName=iith
+    Description: Retrieves the college details for the requested college.
+    Query Parameters:
+        collegeName: Abbreviated name of the college.
+    Response:
+        Successful Response:
+{
+  "status": true,
+  "data": {
+    "name": "iith",
+    "fullName": "Indian Institute of Technology, Hyderabad",
+    "logoLink": "some public s3 link for a college logo",
+    "interns": [
+      {
+        "_id": "123a47301a53ecaeea02be59",
+        "name": "Jane Doe",
+        "email": "jane.doe@miet.ac.in",
+        "mobile": "8888888888"
+      },
+      {
+        "_id": "45692c0e1a53ecaeea02b1ac",
+        "name": "John Doe",
+        "email": "john.doe@miet.ac.in",
+        "mobile": "9999999999"
+      },
+      {
+        "_id": "7898d0251a53ecaeea02a623",
+        "name": "Sukruti",
+        "email": "dummy.email@miet.ac.in",
+        "mobile": "9191919191"
+      },
+      {
+        "_id": "999803da1a53ecaeea02a07e",
+        "name": "Neeraj Kumar",
+        "email": "another.example@miet.ac.in",
+        "mobile": "9898989898"
       }
-    }
-    ```
+    ]
+  }
+}
 
-    Returns HTTP status 400 for an invalid request.
+Error Response:
+        {
+          "status": false,
+          "message": "Error message describing the issue"
+        }
 
-- `GET /:urlCode`: Redirects to the original URL corresponding to the provided `urlCode`.
+# Testing
 
-    Returns a suitable error message for a URL not found.
-    Returns HTTP status 400 for an invalid request.
+To test the API endpoints:
 
-### Testing
+    Install Postman.
+    Create a new collection in Postman named "Project 2 Internship."
+    Add a request to the collection for each API endpoint.
+    Name each request correctly to identify its purpose.
+    Send requests from the collection to test the API functionalities.
 
-- Use Postman to test the API endpoints.
-- Create a new collection named "Project 2 URL Shortener."
-- Add a request to the collection for each API endpoint.
-- Ensure that each request is named correctly.
+# Dependencies
 
-### Caching
+The following dependencies are used in the project:
 
-In this phase, we introduce caching to optimize the retrieval of newly created short URLs within the first 24 hours.
+    axios: Used for validating the logoLink for colleges.
+    dotenv: Used for loading environment variables from a .env file.
 
-- Implement caching logic to store and retrieve the long URLs associated with the short URLs.
-- Use caching to minimize database calls while fetching the shortened URLs.
+Make sure to install these dependencies using npm install before running the project.
+Environment Variables
 
-### Dependencies
+The system uses environment variables to configure certain settings. Create a .env file in the project root directory and provide the following variables:
 
-The project uses the following dependencies:
+    PORT: Port number for the server to listen on.
+    MONGODB_URL: mongoDb Url
+    Other environment variables as required by your setup.
 
-- `dotenv`: Loads environment variables from a `.env` file.
-- `shortid`: Generates unique short IDs for the URL codes.
-- `valid-url`: Validates the format of the original URLs.
-- `redis`: A caching solution for storing and retrieving data.
+# Setup Instructions
 
-Make sure to install these dependencies by running `npm install` before running the project.
+To set up the project:
 
-### Setup Instructions
+    Clone the project repository.
+    Install the required dependencies using npm install.
+    Configure the environment variables by creating a .env file (see the "Environment Variables" section above).
+    Start the server using npm start.
 
-1. Clone the project repository.
-2. Install the required dependencies using `npm install`.
-3. Configure the environment variables by creating a `.env` file.
-4. Start the server using `npm start`.
+# Conclusion
 
-Please refer to the documentation for detailed instructions on environment variable configuration, running the server, and API usage.
-
-## Conclusion
-
-The Scalable URL Shortener Project provides a robust and scalable solution for shortening and managing URLs. By implementing caching and optimizing database calls, the project ensures efficient performance even under high traffic scenarios. Redis is used as a caching solution to improve the retrieval of short URLs and reduce database load.
+The Internship Management System provides a comprehensive solution for managing colleges and interns in an internship program. It offers APIs to create colleges and interns, retrieve college details, and associate interns with colleges. By following the provided documentation, you can effectively use and test the API endpoints to streamline the internship management process.
