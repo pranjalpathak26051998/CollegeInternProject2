@@ -6,6 +6,7 @@ const { isValid, isValidRequestBody, isValidString , isValidEmail , isValidMobil
 const college = async function (req, res) {
   try {
     const data = req.body;
+    
     if (!isValidRequestBody(data)) {
       return res.status(400).send({ status: false, message: "Please enter College Details" });
     }
