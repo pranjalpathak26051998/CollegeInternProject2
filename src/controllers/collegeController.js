@@ -105,7 +105,7 @@ const interns = async function (req, res){
       mobile : result.mobile,
       collegeId : result.collegeId
     }
-    return res.status(200).send({ status: true, data: response });
+    return res.status(201).send({ status: true, data: response });
 
   }catch(error){
     return res.status(500).send({ status: false, message: error.message });
@@ -137,7 +137,7 @@ let collegeDetails = async (req, res) => {
       logoLink: getCollege.logoLink,
       interns: interns, //array in intern
     };
-    return res.status(200).send({ status: true, data: data });
+    return res.status(201).send({ status: true, data: data });
   }catch(error){
     return res.status(500).send({ status: false, message: err.message });
   }
