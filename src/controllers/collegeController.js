@@ -15,9 +15,9 @@ const college = async function (req, res) {
     if(!name || !fullName || !logoLink){
       return res.status(400).send({ status: false, message: "Please enter all field" });
     }
-    if (!isValidString(name) || !isValidString(fullName)) {
-      return res.status(400).send({ status: false, message: "Please enter valid college name and fullName" });
-    }
+    // if (!isValidString(name) || !isValidString(fullName)) {
+    //   return res.status(400).send({ status: false, message: "Please enter valid college name and fullName" });
+    // }
 
     if (!isValid(logoLink)) {
       return res.status(400).send({ status: false, message: "Please provide a valid logoLink" });
